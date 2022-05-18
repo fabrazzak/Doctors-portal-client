@@ -1,16 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import auth from '../../../firebase.init';
+import { signOut } from 'firebase/auth';
 
 const Header = () => {
+    const [user, loading, error] = useAuthState(auth);
+    const logout = () => {
+        signOut(auth);
+    };
     const menuItem = <>
-        <li className='text-xl'><Link to='/'>Home</Link></li>
-        <li className='text-xl'><Link to='about'>About</Link></li>
-        <li className='text-xl'><Link to='appointment'>Appointment</Link></li>
-        <li className='text-xl'><Link to='reviews'>Reviews</Link></li>
-        <li className='text-xl'><Link to='contact'>Contact Us</Link></li>
-        <li className='text-xl'><Link to='login'>Login</Link></li>
-        <li className='text-xl'><Link to='signup'>Sign Up</Link></li>
+        <li className='text-xl font-bold'><Link to='/'>Home</Link></li>
+        <li className='text-xl font-bold'><Link to='about'>About</Link></li>
+        <li className='text-xl font-bold'><Link to='appointment'>Appointment</Link></li>
+        <li className='text-xl font-bold'><Link to='reviews'>Reviews</Link></li>
+        <li className='text-xl font-bold'><Link to='contact'>Contact Us</Link></li>
+        <li className='text-xl font-bold'>
+            {user ? <button className="btn btn-ghost text-xl font-bold" onClick={logout} >Log out</button> :
+                <Link to='login'>Login</Link>}</li>
+
     </>
+
     return (
         <div className="navbar bg-base-100 container mx-auto ">
             <div className="navbar-start">

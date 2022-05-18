@@ -2,12 +2,13 @@ import { format } from 'date-fns';
 import React from 'react';
 import './Modal.css'
 
-const Modal = ({ treatment, date }) => {
+const Modal = ({ treatment, date, setTretment}) => {
     const { name, slots } = treatment;
     const handleOnSubmitFormModal = (event) => {
         event.preventDefault();
         const slot = event.target.slot.value;
-        console.log(slot);
+        setTretment(null)
+      
 
     }
     return (
