@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useCreateUserWithEmailAndPassword, useSignInWithEmailAndPassword, useSignInWithGoogle, useUpdateProfile } from 'react-firebase-hooks/auth';
 import auth from '../../firebase.init';
 import { useForm } from "react-hook-form";
 import Loading from '../Sheared/Loading';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import useToken from '../../Hooks/useToken';
 
 const Singup = () => {
    
@@ -15,6 +16,16 @@ const Singup = () => {
         loading,
         error,
     ] = useCreateUserWithEmailAndPassword(auth);
+    const navigate=useNavigate();
+  
+
+    const [token]=useToken( gUser || user);
+    
+    if(token){
+        navigate("/appointment");
+    }
+
+  
     const [updateProfile, pUpdating, pError] = useUpdateProfile(auth);
    
     let singError;
@@ -29,7 +40,6 @@ const Singup = () => {
 
        await createUserWithEmailAndPassword(data.email, data.password,data.displayName);
          await updateProfile({ displayName: data.name });
-          reset( { data})
 
     }
 

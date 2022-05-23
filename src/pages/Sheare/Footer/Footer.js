@@ -3,7 +3,6 @@ import footers from "../../../assets/images/footer.png"
 const Footer = () => {
     const todayDate = new Date();
     const year = todayDate.getFullYear();
-    console.log(year)
     return (
         <section className='py-' style={{
             background: `url(${footers})center`,

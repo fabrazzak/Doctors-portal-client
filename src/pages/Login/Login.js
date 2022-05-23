@@ -3,17 +3,33 @@ import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-fireba
 import auth from '../../firebase.init';
 import { useForm } from "react-hook-form";
 import Loading from '../Sheared/Loading';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useNavigation } from 'react-day-picker';
+import { useEffect } from 'react';
+import useToken from '../../Hooks/useToken';
 
 const Login = () => {
     const { register, handleSubmit,reset, watch, formState: { errors } } = useForm();
     const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
+    let navigate = useNavigate();
+    let location = useLocation();
+    let from = location.state?.from?.pathname || "/";
     const [
         signInWithEmailAndPassword,
         user,
         loading,
         error,
     ] = useSignInWithEmailAndPassword(auth);
+    const [token]=useToken( user || gUser);
+    
+   useEffect(()=>{
+       if(token){
+           navigate(from, { replace: true });
+
+       }
+       
+   }, [token, navigate,from])
+
     let singError;
      if( loading || gLoading){
          return <Loading></Loading>
@@ -24,14 +40,17 @@ const Login = () => {
    
     const onSubmit = data => {
 
-        signInWithEmailAndPassword(data.email,data.password)       
+        signInWithEmailAndPassword(data.email,data.password) ;
+        reset({data:" "})
 
-            reset({data :' '})
-      
+        
         
 
         
        
+    }
+    const handleForgetPassword =()=>{
+        navigate("/forget-password")
     }
   
 
@@ -93,18 +112,22 @@ const Login = () => {
                                         message: "Must be 6 character or longer"
                                     }
                                 })} />
+                           
+
                             <label className="label">
                                 {errors.password?.type === "required" && <span className="label-text-alt text-red-500">{errors.password.message}</span>}
                                 {errors.password?.type === "pattern" && <span className="label-text-alt text-red-500">{errors.password.message}</span>}
+                                <span onClick={handleForgetPassword} className='text-secondary font-bold cursor-pointer'>Forget Password?</span>
 
                             </label>
+                            
                         </div>
 
 
                         {singError}
                         <input className='w-full max-w-xs btn btn-info text-white' type="submit" />
                     </form>
-                    <p><small>Are you new to Doctors portal?<Link to='/signup' className='text-secondary font-bold'> Create an account</Link></small></p>
+                    <p><small> New to Doctors portal?<Link to='/signup' className='text-secondary font-bold'> Create new           account</Link></small></p>
 
                     {/* handle form   */}
 
